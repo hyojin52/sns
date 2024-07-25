@@ -64,3 +64,4 @@ clean.dependsOn cleanFrontEnd
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
