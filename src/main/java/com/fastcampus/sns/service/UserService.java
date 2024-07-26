@@ -1,0 +1,59 @@
+package com.fastcampus.sns.service;
+
+import com.fastcampus.sns.exception.ErrorCode;
+import com.fastcampus.sns.exception.SnsApplicationException;
+import com.fastcampus.sns.model.User;
+import com.fastcampus.sns.model.entiry.UserEntity;
+import com.fastcampus.sns.repository.UserEntityRepository;
+import com.fastcampus.sns.util.JwtTokenUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+  
+  private final UserEntityRepository userEntityRepository;
+  private final BCryptPasswordEncoder encoder;
+  
+  @Value("${jwt.secret-key}")
+  private String secretKey;
+  
+  @Value("${jwt.token.expired-time-ms}")
+  private Long expiredTimeMs;
+  
+  @Transactional
+  public User join(String username, String password) {
+    // 회원가입하려는 userName 으로 회원가입된 user 가 있는지
+    userEntityRepository.findByUserName(username)
+            .ifPresent( it -> {
+              throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, String.format("%s is duplicated", username));
+            });
+    // 회원 가입 진행 =user 를 등록
+    UserEntity userEntity = userEntityRepository.save(UserEntity.of(username, encoder.encode(password)));
+    return User.fromEntity(userEntity);
+  }
+  
+  public String login(String username, String password) {
+    // 회원가입 여부 체크
+    UserEntity userEntity = userEntityRepository.findByUserName(username)
+            .orElseThrow(() ->
+                    new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", username))
+            );
+    
+    // 비밀번호 체크
+    if(!encoder.matches(password, userEntity.getPassword())) {
+      throw new SnsApplicationException(ErrorCode.INVALID_PASSWORD, "");
+    }
+    
+    // 토큰 생성
+    String token = JwtTokenUtils.generateToken(username, secretKey, expiredTimeMs);
+    return token;
+  }
+}
