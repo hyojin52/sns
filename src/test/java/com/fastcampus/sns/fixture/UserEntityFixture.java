@@ -1,7 +1,6 @@
 package com.fastcampus.sns.fixture;
 
-import com.fastcampus.sns.model.User;
-import com.fastcampus.sns.model.entiry.UserEntity;
+import com.fastcampus.sns.model.entity.UserEntity;
 
 public class UserEntityFixture {
 

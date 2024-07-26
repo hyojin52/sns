@@ -1,4 +1,4 @@
-package com.fastcampus.sns.model.entiry;
+package com.fastcampus.sns.model.entity;
 
 import com.fastcampus.sns.model.UserRole;
 import lombok.Data;
@@ -10,24 +10,24 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "\"post\"")
 @Data
-@SQLDelete(sql = "UPDATED user SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATED \"post\" SET deleted_at = NOW() where id=?")
 @Where(clause = "deleted_at is NULL")
-public class UserEntity {
+public class PostEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
   
-  @Column(name = "user_name")
-  private String userName;
+  @Column(name = "title")
+  private String title;
   
-  @Column(name = "password")
-  private String password;
+  @Column(name = "body", columnDefinition = "TEXT")
+  private String body;
   
-  @Column(name = "role")
-  @Enumerated(EnumType.STRING)
-  private UserRole role;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private UserEntity user;
   
   @Column(name="registered_at")
   private Timestamp registeredAt;
@@ -44,11 +44,12 @@ public class UserEntity {
   @PreUpdate
   void updatedAt() {this.updatedAt = Timestamp.from(Instant.now());}
   
-  public static UserEntity of(String userName, String password) {
-    UserEntity userEntity = new UserEntity();
-    userEntity.setUserName(userName);
-    userEntity.setPassword(password);
-    return userEntity;
+  public static PostEntity of(String title, String body, UserEntity userEntity) {
+    PostEntity postEntity = new PostEntity();
+    postEntity.setTitle(title);
+    postEntity.setBody(body);
+    postEntity.setUser(userEntity);
+    return postEntity;
   }
   
 }

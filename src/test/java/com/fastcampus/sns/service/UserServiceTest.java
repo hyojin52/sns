@@ -3,7 +3,7 @@ package com.fastcampus.sns.service;
 import com.fastcampus.sns.exception.ErrorCode;
 import com.fastcampus.sns.exception.SnsApplicationException;
 import com.fastcampus.sns.fixture.UserEntityFixture;
-import com.fastcampus.sns.model.entiry.UserEntity;
+import com.fastcampus.sns.model.entity.UserEntity;
 import com.fastcampus.sns.repository.UserEntityRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
