@@ -1,3 +1,3 @@
-# sns
-fastcampus sns project
+## sns
+
 demo: tcampus-sns-application-172bdcc0dac0.herokuapp.com
