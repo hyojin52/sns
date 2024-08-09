@@ -3,6 +3,7 @@ spring.jpa:
   hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
   hibernate.ddl-auto: update
   show-sql: true
+  properties.hibernate.format_sql: true
 
 
 spring:
@@ -14,10 +15,6 @@ spring:
     password: p7486f9db81b4a92d95e3ea26a60b1ec177557295620ddf4beae5558d6547212e
     platform: postgres
     driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
 
 
 jwt:
