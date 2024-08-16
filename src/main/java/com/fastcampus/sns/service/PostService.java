@@ -2,16 +2,12 @@ package com.fastcampus.sns.service;
 
 import com.fastcampus.sns.exception.ErrorCode;
 import com.fastcampus.sns.exception.SnsApplicationException;
+import com.fastcampus.sns.model.AlarmArgs;
+import com.fastcampus.sns.model.AlarmType;
 import com.fastcampus.sns.model.Comment;
 import com.fastcampus.sns.model.Post;
-import com.fastcampus.sns.model.entity.CommentEntity;
-import com.fastcampus.sns.model.entity.LikeEntity;
-import com.fastcampus.sns.model.entity.PostEntity;
-import com.fastcampus.sns.model.entity.UserEntity;
-import com.fastcampus.sns.repository.CommentEntityRepository;
-import com.fastcampus.sns.repository.LikeEntityRepository;
-import com.fastcampus.sns.repository.PostEntityRepository;
-import com.fastcampus.sns.repository.UserEntityRepository;
+import com.fastcampus.sns.model.entity.*;
+import com.fastcampus.sns.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +28,8 @@ public class PostService {
   private final LikeEntityRepository likeEntityRepository;
   
   private final CommentEntityRepository commentEntityRepository;
+  
+  private final AlarmEntityRepository alarmEntityRepository;
   
   
   @Transactional
@@ -94,6 +92,8 @@ public class PostService {
     });
     
     likeEntityRepository.save(LikeEntity.of(userEntity, postEntity));
+    
+    alarmEntityRepository.save(AlarmEntity.of(userEntity, AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(userEntity.getId(), postEntity.getId())));
   }
   
   
@@ -115,6 +115,8 @@ public class PostService {
     
     // comment save
     commentEntityRepository.save(CommentEntity.of(userEntity, postEntity, comment));
+    
+    alarmEntityRepository.save(AlarmEntity.of(userEntity, AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(userEntity.getId(), postEntity.getId())));
   }
   
   public Page<Comment> getComment(Integer postId, Pageable pageable) {
