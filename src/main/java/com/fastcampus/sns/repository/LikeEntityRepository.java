@@ -6,9 +6,11 @@ import com.fastcampus.sns.model.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,4 +24,9 @@ public interface LikeEntityRepository extends JpaRepository<LikeEntity, Integer>
   Integer countByPost(@Param("post") PostEntity post);
   
   List<LikeEntity> findByPost(PostEntity post);
+  
+  @Transactional
+  @Modifying
+  @Query("UPDATE LikeEntity entity SET entity.deletedAt = NOW() where entity.post = :post")
+  void deleteAllByPost(@Param("post") PostEntity post);
 }

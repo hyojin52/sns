@@ -6,7 +6,6 @@ import lombok.Getter;
 
 import java.sql.Timestamp;
 
-
 @AllArgsConstructor
 @Getter
 public class Alarm {
